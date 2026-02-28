@@ -3,12 +3,12 @@
   "date": "2026-03-23",
   "checkpoints": [
     {
-      "id": "cp_1772277497658_qxowewyw7",
-      "location": "airport",
+      "id": "cp_1772278419161_zbe5vyik5",
+      "location": "example",
       "googleMapLink": "",
       "cost": 0,
-      "startTime": "07:18",
-      "endTime": "07:19"
+      "startTime": "07:33",
+      "endTime": "19:34"
     }
   ]
 }
