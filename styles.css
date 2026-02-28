@@ -158,6 +158,12 @@ body {
     color: #388e3c;
 }
 
+.sync-btn:hover {
+    background: #fff3e0;
+    border-color: #ff9800;
+    color: #e65100;
+}
+
 .add-btn {
     background: #27ae60;
     color: white;

@@ -88,20 +88,91 @@ class TravelPlanner {
         }
     }
 
-    // Load data from JSON file via API
+    // Load data from JSON file (works for both server and static hosting)
     async loadFromJSON(day) {
         try {
-            const response = await fetch(`/api/load/day${day}`);
+            // First try API (local development with server)
+            let response;
+            try {
+                response = await fetch(`/api/load/day${day}`);
+            } catch (e) {
+                response = { ok: false };
+            }
+            
+            // If API fails, try loading static JSON file directly (GitHub Pages)
+            if (!response.ok) {
+                response = await fetch(`data/day${day}.json`);
+            }
+            
             if (response.ok) {
                 const jsonData = await response.json();
-                this.data[day] = jsonData;
-                this.saveToLocalStorage(day);
+                
+                // Check version/timestamp to decide which data to use
+                const stored = localStorage.getItem(`day${day}`);
+                const storedData = stored ? JSON.parse(stored) : null;
+                const jsonVersion = localStorage.getItem(`day${day}_jsonVersion`);
+                
+                // Calculate a simple hash of JSON checkpoints for version comparison
+                const jsonHash = JSON.stringify(jsonData.checkpoints || []);
+                
+                // Load from JSON if:
+                // 1. localStorage is empty, OR
+                // 2. JSON file has changed since last sync (new deployment)
+                if (!storedData || !storedData.checkpoints || jsonVersion !== jsonHash) {
+                    if (jsonData.checkpoints && jsonData.checkpoints.length > 0) {
+                        this.data[day] = jsonData;
+                        this.saveToLocalStorage(day);
+                        localStorage.setItem(`day${day}_jsonVersion`, jsonHash);
+                        console.log(`✅ Day ${day} synced from JSON file`);
+                    }
+                }
+                
                 if (day === this.currentDay) {
                     this.renderCheckpoints();
                 }
             }
         } catch (error) {
-            console.log(`Could not load from server for day ${day}, using localStorage`);
+            console.log(`Could not load JSON for day ${day}, using localStorage`);
+        }
+    }
+
+    // Force sync from cloud/JSON files (overwrites localStorage)
+    async syncFromCloud() {
+        const confirmSync = confirm(
+            'This will reload data from the repository and overwrite any local changes.\n\n' +
+            'Continue?'
+        );
+        
+        if (!confirmSync) return;
+
+        try {
+            for (let day = 1; day <= 8; day++) {
+                let response;
+                try {
+                    response = await fetch(`/api/load/day${day}`);
+                } catch (e) {
+                    response = { ok: false };
+                }
+                
+                if (!response.ok) {
+                    response = await fetch(`data/day${day}.json`);
+                }
+                
+                if (response.ok) {
+                    const jsonData = await response.json();
+                    this.data[day] = jsonData;
+                    this.saveToLocalStorage(day);
+                    
+                    // Update version hash
+                    const jsonHash = JSON.stringify(jsonData.checkpoints || []);
+                    localStorage.setItem(`day${day}_jsonVersion`, jsonHash);
+                }
+            }
+            
+            this.renderCheckpoints();
+            alert('✅ Data synced successfully from repository!');
+        } catch (error) {
+            alert('❌ Failed to sync data: ' + error.message);
         }
     }
 
@@ -133,10 +204,11 @@ class TravelPlanner {
             if (response.ok) {
                 console.log(`✅ Day ${day} saved to JSON file`);
             } else {
-                console.error(`❌ Failed to save day ${day}`);
+                console.log(`ℹ️ Server not available, data saved to localStorage only`);
             }
         } catch (error) {
-            console.error(`❌ Error saving to JSON:`, error);
+            // Server not available (e.g., GitHub Pages), just use localStorage
+            console.log(`ℹ️ Running in static mode, data saved to localStorage only`);
         }
     }
 
@@ -165,6 +237,11 @@ class TravelPlanner {
         // Add checkpoint button
         document.getElementById('add-checkpoint').addEventListener('click', () => {
             this.openModal();
+        });
+
+        // Sync data button
+        document.getElementById('sync-data').addEventListener('click', () => {
+            this.syncFromCloud();
         });
 
         // Export JSON button
