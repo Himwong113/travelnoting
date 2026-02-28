@@ -1,5 +1,14 @@
 {
   "day": 1,
-  "date": "",
-  "checkpoints": []
+  "date": "2026-03-23",
+  "checkpoints": [
+    {
+      "id": "cp_1772277497658_qxowewyw7",
+      "location": "airport",
+      "googleMapLink": "",
+      "cost": 0,
+      "startTime": "07:18",
+      "endTime": "07:19"
+    }
+  ]
 }
