@@ -24,13 +24,23 @@
         <main class="main-content">
             <header class="content-header">
                 <h1 id="day-title">Day 1 - Checkpoints</h1>
-                <button class="add-btn" id="add-checkpoint">+ Add Checkpoint</button>
+                <div class="header-actions">
+                    <button class="action-btn import-btn" id="import-json" title="Import JSON">
+                        📥 Import
+                    </button>
+                    <button class="action-btn export-btn" id="export-json" title="Export JSON">
+                        📤 Export
+                    </button>
+                    <button class="add-btn" id="add-checkpoint">+ Add Checkpoint</button>
+                </div>
+                <input type="file" id="file-input" accept=".json" style="display: none;">
             </header>
 
             <div class="table-container">
                 <table class="checkpoint-table">
                     <thead>
                         <tr>
+                            <th class="th-drag"></th>
                             <th>#</th>
                             <th>Location</th>
                             <th>Google Maps</th>

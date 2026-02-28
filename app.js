@@ -136,6 +136,21 @@ class TravelPlanner {
             this.openModal();
         });
 
+        // Export JSON button
+        document.getElementById('export-json').addEventListener('click', () => {
+            this.exportCurrentDayToJSON();
+        });
+
+        // Import JSON button
+        document.getElementById('import-json').addEventListener('click', () => {
+            document.getElementById('file-input').click();
+        });
+
+        // File input change
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            this.importJSON(e);
+        });
+
         // Form submission
         document.getElementById('checkpoint-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -160,6 +175,66 @@ class TravelPlanner {
                 this.closeModal();
             }
         });
+    }
+
+    // Export current day data to JSON file
+    exportCurrentDayToJSON() {
+        const data = this.data[this.currentDay];
+        const date = this.getDateForDay(this.currentDay);
+        const dateStr = this.formatDateForInput(date);
+        
+        const exportData = {
+            day: this.currentDay,
+            date: dateStr,
+            checkpoints: data.checkpoints || []
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `day${this.currentDay}_${dateStr}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Import JSON file
+    importJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                if (importedData.checkpoints && Array.isArray(importedData.checkpoints)) {
+                    // Ask user whether to replace or merge
+                    const action = confirm(
+                        `Import ${importedData.checkpoints.length} checkpoints to Day ${this.currentDay}?\n\n` +
+                        `OK = Replace existing data\n` +
+                        `Cancel = Keep existing and skip import`
+                    );
+                    
+                    if (action) {
+                        this.data[this.currentDay] = {
+                            checkpoints: importedData.checkpoints
+                        };
+                        this.saveToLocalStorage(this.currentDay);
+                        this.renderCheckpoints();
+                        alert('Data imported successfully!');
+                    }
+                } else {
+                    alert('Invalid JSON format. Expected { "checkpoints": [...] }');
+                }
+            } catch (error) {
+                alert('Error reading JSON file: ' + error.message);
+            }
+        };
+        reader.readAsText(file);
+        
+        // Reset file input
+        event.target.value = '';
     }
 
     // Switch between days
@@ -196,7 +271,7 @@ class TravelPlanner {
         if (checkpoints.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="empty-state">
                             <h3>No checkpoints yet</h3>
                             <p>Click "Add Checkpoint" to add your first location</p>
@@ -216,7 +291,8 @@ class TravelPlanner {
                 : '<span style="color: #999;">No link</span>';
             
             return `
-                <tr data-id="${cp.id}">
+                <tr data-id="${cp.id}" draggable="true">
+                    <td class="drag-handle" title="Drag to reorder">⋮⋮</td>
                     <td>${index + 1}</td>
                     <td><strong>${this.escapeHtml(cp.location)}</strong></td>
                     <td>${mapLink}</td>
@@ -234,6 +310,71 @@ class TravelPlanner {
         }).join('');
 
         document.getElementById('total-cost').textContent = totalCost.toFixed(2);
+        
+        // Initialize drag and drop
+        this.initDragAndDrop();
+    }
+
+    // Initialize drag and drop for table rows
+    initDragAndDrop() {
+        const tbody = document.getElementById('checkpoint-body');
+        const rows = tbody.querySelectorAll('tr[draggable="true"]');
+        
+        rows.forEach(row => {
+            row.addEventListener('dragstart', (e) => {
+                row.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', row.dataset.id);
+            });
+
+            row.addEventListener('dragend', () => {
+                row.classList.remove('dragging');
+                document.querySelectorAll('tr.drag-over').forEach(r => r.classList.remove('drag-over'));
+            });
+
+            row.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                const draggingRow = tbody.querySelector('.dragging');
+                if (draggingRow && row !== draggingRow) {
+                    row.classList.add('drag-over');
+                }
+            });
+
+            row.addEventListener('dragleave', () => {
+                row.classList.remove('drag-over');
+            });
+
+            row.addEventListener('drop', (e) => {
+                e.preventDefault();
+                row.classList.remove('drag-over');
+                
+                const draggedId = e.dataTransfer.getData('text/plain');
+                const targetId = row.dataset.id;
+                
+                if (draggedId && targetId && draggedId !== targetId) {
+                    this.reorderCheckpoints(draggedId, targetId);
+                }
+            });
+        });
+    }
+
+    // Reorder checkpoints array
+    reorderCheckpoints(draggedId, targetId) {
+        const checkpoints = this.data[this.currentDay].checkpoints;
+        const draggedIndex = checkpoints.findIndex(cp => cp.id === draggedId);
+        const targetIndex = checkpoints.findIndex(cp => cp.id === targetId);
+
+        if (draggedIndex !== -1 && targetIndex !== -1) {
+            // Remove dragged item
+            const [draggedItem] = checkpoints.splice(draggedIndex, 1);
+            // Insert at target position
+            checkpoints.splice(targetIndex, 0, draggedItem);
+            
+            // Save and re-render
+            this.saveToLocalStorage(this.currentDay);
+            this.renderCheckpoints();
+        }
     }
 
     // Open modal for add/edit
