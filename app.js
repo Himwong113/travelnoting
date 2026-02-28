@@ -45,6 +45,19 @@ class TravelPlanner {
 
     // Get date for a specific day number
     getDateForDay(dayNum) {
+        // If the day's JSON data contains an explicit date, prefer it
+        try {
+            const dayData = this.data[dayNum];
+            if (dayData && dayData.date) {
+                const parsed = new Date(dayData.date);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+        } catch (e) {
+            // ignore and fallback
+        }
+
         const date = new Date(this.startDate);
         date.setDate(date.getDate() + (dayNum - 1));
         return date;
@@ -124,6 +137,8 @@ class TravelPlanner {
                         this.saveToLocalStorage(day);
                         localStorage.setItem(`day${day}_jsonVersion`, jsonHash);
                         console.log(`✅ Day ${day} synced from JSON file`);
+                        // Update day buttons to reflect any date values loaded from JSON
+                        this.renderDayButtons();
                     }
                 }
                 
@@ -170,6 +185,7 @@ class TravelPlanner {
             }
             
             this.renderCheckpoints();
+            this.renderDayButtons();
             alert('✅ Data synced successfully from repository!');
         } catch (error) {
             alert('❌ Failed to sync data: ' + error.message);
@@ -186,6 +202,11 @@ class TravelPlanner {
         const date = this.getDateForDay(day);
         const dateStr = this.formatDateForInput(date);
         
+        // Ensure the in-memory data has the date so tabs reflect it
+        if (!this.data[day]) this.data[day] = { checkpoints: [] };
+        this.data[day].date = dateStr;
+        this.saveToLocalStorage(day);
+
         const saveData = {
             day: day,
             date: dateStr,
@@ -599,7 +620,8 @@ class TravelPlanner {
         checkpoints.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
         this.saveToLocalStorage(this.currentDay);
-        this.saveToJSON(this.currentDay); // Save to JSON file
+        this.saveToJSON(this.currentDay); // Save to JSON file (will also update date in data)
+        this.renderDayButtons(); // Update tab labels in case date changed
         this.renderCheckpoints();
         this.closeModal();
     }
