@@ -226,6 +226,19 @@ class TravelPlanner {
 
     // Bind all event listeners
     bindEvents() {
+        // Mobile sidebar events
+        document.getElementById('hamburger-btn').addEventListener('click', () => {
+            this.toggleSidebar();
+        });
+
+        document.getElementById('sidebar-close').addEventListener('click', () => {
+            this.closeSidebar();
+        });
+
+        document.getElementById('sidebar-overlay').addEventListener('click', () => {
+            this.closeSidebar();
+        });
+
         // Start date selector
         document.getElementById('start-day').addEventListener('change', (e) => {
             this.startDate = new Date(e.target.value);
@@ -363,13 +376,48 @@ class TravelPlanner {
         
         // Render checkpoints for selected day
         this.renderCheckpoints();
+        
+        // Close sidebar on mobile after selection
+        this.closeSidebar();
+    }
+
+    // Mobile sidebar functions
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const hamburger = document.getElementById('hamburger-btn');
+        
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+        hamburger.classList.toggle('active');
+    }
+
+    closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const hamburger = document.getElementById('hamburger-btn');
+        
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+        hamburger.classList.remove('active');
     }
 
     // Update the day title with date
     updateDayTitle() {
         const date = this.getDateForDay(this.currentDay);
         const dateStr = this.formatDateForDisplay(date);
-        document.getElementById('day-title').textContent = `Day ${this.currentDay} (${dateStr}) - Checkpoints`;
+        
+        // Update desktop title
+        const desktopTitle = document.getElementById('day-title');
+        if (desktopTitle) {
+            desktopTitle.textContent = `Day ${this.currentDay} (${dateStr}) - Checkpoints`;
+        }
+        
+        // Update mobile title
+        const mobileTitle = document.getElementById('mobile-day-title');
+        if (mobileTitle) {
+            mobileTitle.textContent = `Day ${this.currentDay} (${dateStr}) - Checkpoints`;
+        }
     }
 
     // Render checkpoints table

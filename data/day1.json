@@ -3,14 +3,6 @@
   "date": "2026-03-23",
   "checkpoints": [
     {
-      "id": "cp_1772278419161_zbe5vyik5",
-      "location": "example",
-      "googleMapLink": "",
-      "cost": 0,
-      "startTime": "07:33",
-      "endTime": "19:34"
-    },
-    {
       "id": "cp_1772278861317_2ii4g1cz6",
       "location": "Skybridge Petronas Twin Towers",
       "googleMapLink": "https://maps.app.goo.gl/j5sm7DpJFK6S3aXN8",
