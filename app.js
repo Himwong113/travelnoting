@@ -1,0 +1,364 @@
+// Travel Planner App
+class TravelPlanner {
+    constructor() {
+        this.currentDay = 1;
+        this.data = {};
+        this.editingId = null;
+        this.startDate = null;
+        
+        this.init();
+    }
+
+    init() {
+        this.loadStartDate();
+        this.loadAllData();
+        this.renderDayButtons();
+        this.bindEvents();
+        this.renderCheckpoints();
+    }
+
+    // Load start date from localStorage
+    loadStartDate() {
+        const stored = localStorage.getItem('travelStartDate');
+        if (stored) {
+            this.startDate = new Date(stored);
+        } else {
+            // Default to today
+            this.startDate = new Date();
+        }
+        document.getElementById('start-day').value = this.formatDateForInput(this.startDate);
+    }
+
+    // Format date for input[type="date"]
+    formatDateForInput(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Format date for display (e.g., "Mar 1")
+    formatDateForDisplay(date) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return `${months[date.getMonth()]} ${date.getDate()}`;
+    }
+
+    // Get date for a specific day number
+    getDateForDay(dayNum) {
+        const date = new Date(this.startDate);
+        date.setDate(date.getDate() + (dayNum - 1));
+        return date;
+    }
+
+    // Render day buttons with dates
+    renderDayButtons() {
+        const nav = document.getElementById('day-nav');
+        nav.innerHTML = '';
+        
+        for (let day = 1; day <= 8; day++) {
+            const date = this.getDateForDay(day);
+            const btn = document.createElement('button');
+            btn.className = `day-btn${day === this.currentDay ? ' active' : ''}`;
+            btn.dataset.day = day;
+            btn.innerHTML = `<span class="day-label">Day ${day}</span><span class="day-date">${this.formatDateForDisplay(date)}</span>`;
+            nav.appendChild(btn);
+        }
+
+        // Re-bind day button events
+        document.querySelectorAll('.day-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.target.closest('.day-btn');
+                this.switchDay(parseInt(target.dataset.day));
+            });
+        });
+    }
+
+    // Load data from localStorage (simulating JSON files)
+    loadAllData() {
+        for (let day = 1; day <= 8; day++) {
+            const stored = localStorage.getItem(`day${day}`);
+            if (stored) {
+                this.data[day] = JSON.parse(stored);
+            } else {
+                // Initialize with empty array or load from JSON file
+                this.data[day] = { checkpoints: [] };
+                this.loadFromJSON(day);
+            }
+        }
+    }
+
+    // Load data from JSON file
+    async loadFromJSON(day) {
+        try {
+            const response = await fetch(`data/day${day}.json`);
+            if (response.ok) {
+                const jsonData = await response.json();
+                this.data[day] = jsonData;
+                this.saveToLocalStorage(day);
+                if (day === this.currentDay) {
+                    this.renderCheckpoints();
+                }
+            }
+        } catch (error) {
+            console.log(`No JSON file for day ${day}, using empty data`);
+        }
+    }
+
+    // Save to localStorage
+    saveToLocalStorage(day) {
+        localStorage.setItem(`day${day}`, JSON.stringify(this.data[day]));
+    }
+
+    // Export current day data as JSON
+    exportToJSON(day) {
+        const data = this.data[day];
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `day${day}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Bind all event listeners
+    bindEvents() {
+        // Start date selector
+        document.getElementById('start-day').addEventListener('change', (e) => {
+            this.startDate = new Date(e.target.value);
+            localStorage.setItem('travelStartDate', e.target.value);
+            this.renderDayButtons();
+            this.updateDayTitle();
+        });
+
+        // Add checkpoint button
+        document.getElementById('add-checkpoint').addEventListener('click', () => {
+            this.openModal();
+        });
+
+        // Form submission
+        document.getElementById('checkpoint-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveCheckpoint();
+        });
+
+        // Cancel button
+        document.getElementById('cancel-btn').addEventListener('click', () => {
+            this.closeModal();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('checkpoint-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'checkpoint-modal') {
+                this.closeModal();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeModal();
+            }
+        });
+    }
+
+    // Switch between days
+    switchDay(day) {
+        this.currentDay = day;
+        
+        // Update active button
+        document.querySelectorAll('.day-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (parseInt(btn.dataset.day) === day) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update title
+        this.updateDayTitle();
+        
+        // Render checkpoints for selected day
+        this.renderCheckpoints();
+    }
+
+    // Update the day title with date
+    updateDayTitle() {
+        const date = this.getDateForDay(this.currentDay);
+        const dateStr = this.formatDateForDisplay(date);
+        document.getElementById('day-title').textContent = `Day ${this.currentDay} (${dateStr}) - Checkpoints`;
+    }
+
+    // Render checkpoints table
+    renderCheckpoints() {
+        const tbody = document.getElementById('checkpoint-body');
+        const checkpoints = this.data[this.currentDay]?.checkpoints || [];
+
+        if (checkpoints.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <h3>No checkpoints yet</h3>
+                            <p>Click "Add Checkpoint" to add your first location</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            document.getElementById('total-cost').textContent = '0.00';
+            return;
+        }
+
+        let totalCost = 0;
+        tbody.innerHTML = checkpoints.map((cp, index) => {
+            totalCost += parseFloat(cp.cost) || 0;
+            const mapLink = cp.googleMapLink 
+                ? `<a href="${cp.googleMapLink}" target="_blank" class="map-link">View Map</a>`
+                : '<span style="color: #999;">No link</span>';
+            
+            return `
+                <tr data-id="${cp.id}">
+                    <td>${index + 1}</td>
+                    <td><strong>${this.escapeHtml(cp.location)}</strong></td>
+                    <td>${mapLink}</td>
+                    <td>$${parseFloat(cp.cost).toFixed(2)}</td>
+                    <td>${cp.startTime}</td>
+                    <td>${cp.endTime}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="edit-btn" onclick="app.editCheckpoint('${cp.id}')">Edit</button>
+                            <button class="delete-btn" onclick="app.deleteCheckpoint('${cp.id}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        document.getElementById('total-cost').textContent = totalCost.toFixed(2);
+    }
+
+    // Open modal for add/edit
+    openModal(checkpoint = null) {
+        const modal = document.getElementById('checkpoint-modal');
+        const form = document.getElementById('checkpoint-form');
+        const title = document.getElementById('modal-title');
+
+        form.reset();
+
+        if (checkpoint) {
+            title.textContent = 'Edit Checkpoint';
+            document.getElementById('checkpoint-id').value = checkpoint.id;
+            document.getElementById('location').value = checkpoint.location;
+            document.getElementById('google-map-link').value = checkpoint.googleMapLink || '';
+            document.getElementById('cost').value = checkpoint.cost;
+            document.getElementById('start-time').value = checkpoint.startTime;
+            document.getElementById('end-time').value = checkpoint.endTime;
+            this.editingId = checkpoint.id;
+        } else {
+            title.textContent = 'Add Checkpoint';
+            this.editingId = null;
+        }
+
+        modal.classList.add('active');
+        document.getElementById('location').focus();
+    }
+
+    // Close modal
+    closeModal() {
+        document.getElementById('checkpoint-modal').classList.remove('active');
+        this.editingId = null;
+    }
+
+    // Save checkpoint (add or update)
+    saveCheckpoint() {
+        const checkpoint = {
+            id: this.editingId || this.generateId(),
+            location: document.getElementById('location').value.trim(),
+            googleMapLink: document.getElementById('google-map-link').value.trim(),
+            cost: parseFloat(document.getElementById('cost').value) || 0,
+            startTime: document.getElementById('start-time').value,
+            endTime: document.getElementById('end-time').value
+        };
+
+        if (!this.data[this.currentDay]) {
+            this.data[this.currentDay] = { checkpoints: [] };
+        }
+
+        const checkpoints = this.data[this.currentDay].checkpoints;
+
+        if (this.editingId) {
+            // Update existing
+            const index = checkpoints.findIndex(cp => cp.id === this.editingId);
+            if (index !== -1) {
+                checkpoints[index] = checkpoint;
+            }
+        } else {
+            // Add new
+            checkpoints.push(checkpoint);
+        }
+
+        // Sort by start time
+        checkpoints.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+        this.saveToLocalStorage(this.currentDay);
+        this.renderCheckpoints();
+        this.closeModal();
+    }
+
+    // Edit checkpoint
+    editCheckpoint(id) {
+        const checkpoint = this.data[this.currentDay].checkpoints.find(cp => cp.id === id);
+        if (checkpoint) {
+            this.openModal(checkpoint);
+        }
+    }
+
+    // Delete checkpoint
+    deleteCheckpoint(id) {
+        if (confirm('Are you sure you want to delete this checkpoint?')) {
+            this.data[this.currentDay].checkpoints = this.data[this.currentDay].checkpoints.filter(
+                cp => cp.id !== id
+            );
+            this.saveToLocalStorage(this.currentDay);
+            this.renderCheckpoints();
+        }
+    }
+
+    // Generate unique ID
+    generateId() {
+        return 'cp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Escape HTML to prevent XSS
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Export all days data
+    exportAllData() {
+        const allData = {};
+        for (let day = 1; day <= 8; day++) {
+            allData[`day${day}`] = this.data[day];
+        }
+        const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'travel_plan_all_days.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Clear all data for current day
+    clearDayData() {
+        if (confirm(`Are you sure you want to clear all checkpoints for Day ${this.currentDay}?`)) {
+            this.data[this.currentDay] = { checkpoints: [] };
+            this.saveToLocalStorage(this.currentDay);
+            this.renderCheckpoints();
+        }
+    }
+}
+
+// Initialize the app
+const app = new TravelPlanner();
