@@ -82,15 +82,16 @@ class TravelPlanner {
             } else {
                 // Initialize with empty array or load from JSON file
                 this.data[day] = { checkpoints: [] };
-                this.loadFromJSON(day);
             }
+            // Always try to load from JSON file on startup
+            this.loadFromJSON(day);
         }
     }
 
-    // Load data from JSON file
+    // Load data from JSON file via API
     async loadFromJSON(day) {
         try {
-            const response = await fetch(`data/day${day}.json`);
+            const response = await fetch(`/api/load/day${day}`);
             if (response.ok) {
                 const jsonData = await response.json();
                 this.data[day] = jsonData;
@@ -100,13 +101,43 @@ class TravelPlanner {
                 }
             }
         } catch (error) {
-            console.log(`No JSON file for day ${day}, using empty data`);
+            console.log(`Could not load from server for day ${day}, using localStorage`);
         }
     }
 
-    // Save to localStorage
+    // Save to localStorage and JSON file
     saveToLocalStorage(day) {
         localStorage.setItem(`day${day}`, JSON.stringify(this.data[day]));
+    }
+
+    // Save to JSON file via API
+    async saveToJSON(day) {
+        const date = this.getDateForDay(day);
+        const dateStr = this.formatDateForInput(date);
+        
+        const saveData = {
+            day: day,
+            date: dateStr,
+            checkpoints: this.data[day].checkpoints || []
+        };
+
+        try {
+            const response = await fetch(`/api/save/day${day}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(saveData, null, 2)
+            });
+            
+            if (response.ok) {
+                console.log(`✅ Day ${day} saved to JSON file`);
+            } else {
+                console.error(`❌ Failed to save day ${day}`);
+            }
+        } catch (error) {
+            console.error(`❌ Error saving to JSON:`, error);
+        }
     }
 
     // Export current day data as JSON
@@ -221,6 +252,7 @@ class TravelPlanner {
                             checkpoints: importedData.checkpoints
                         };
                         this.saveToLocalStorage(this.currentDay);
+                        this.saveToJSON(this.currentDay); // Save to JSON file
                         this.renderCheckpoints();
                         alert('Data imported successfully!');
                     }
@@ -373,6 +405,7 @@ class TravelPlanner {
             
             // Save and re-render
             this.saveToLocalStorage(this.currentDay);
+            this.saveToJSON(this.currentDay); // Save to JSON file
             this.renderCheckpoints();
         }
     }
@@ -441,6 +474,7 @@ class TravelPlanner {
         checkpoints.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
         this.saveToLocalStorage(this.currentDay);
+        this.saveToJSON(this.currentDay); // Save to JSON file
         this.renderCheckpoints();
         this.closeModal();
     }
@@ -460,6 +494,7 @@ class TravelPlanner {
                 cp => cp.id !== id
             );
             this.saveToLocalStorage(this.currentDay);
+            this.saveToJSON(this.currentDay); // Save to JSON file
             this.renderCheckpoints();
         }
     }

@@ -1,0 +1,11 @@
+{
+  "name": "travel-planner",
+  "version": "1.0.0",
+  "description": "A web app to plan and track travel checkpoints",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
