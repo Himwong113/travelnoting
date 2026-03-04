@@ -1,5 +1,46 @@
 {
   "day": 4,
-  "date": "",
-  "checkpoints": []
+  "date": "2026-03-26",
+  "checkpoints": [
+    {
+      "id": "cp_d4_001",
+      "location": "Pavilion KL 購物",
+      "googleMapLink": "https://maps.app.goo.gl/3x5GXqKvQwVZxqDr5",
+      "cost": 200,
+      "startTime": "10:00",
+      "endTime": "13:00"
+    },
+    {
+      "id": "cp_d4_002",
+      "location": "Pavilion KL Food Court 午餐",
+      "googleMapLink": "https://maps.app.goo.gl/3x5GXqKvQwVZxqDr5",
+      "cost": 40,
+      "startTime": "13:00",
+      "endTime": "14:00"
+    },
+    {
+      "id": "cp_d4_003",
+      "location": "TRX Exchange 購物 / 或返 KLCC 補買",
+      "googleMapLink": "https://maps.app.goo.gl/FE98vb1xYZqFn3Nn9",
+      "cost": 100,
+      "startTime": "14:30",
+      "endTime": "17:00"
+    },
+    {
+      "id": "cp_d4_004",
+      "location": "KLCC Park + Twin Towers 最後打卡",
+      "googleMapLink": "https://maps.app.goo.gl/kVz6VxKvKuFRfGbV7",
+      "cost": 0,
+      "startTime": "17:30",
+      "endTime": "19:00"
+    },
+    {
+      "id": "cp_d4_005",
+      "location": "去機場 / 收尾",
+      "googleMapLink": "",
+      "cost": 80,
+      "startTime": "19:30",
+      "endTime": "21:00"
+    }
+  ]
 }

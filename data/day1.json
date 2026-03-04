@@ -3,12 +3,28 @@
   "date": "2026-03-23",
   "checkpoints": [
     {
-      "id": "cp_1772278861317_2ii4g1cz6",
-      "location": "Skybridge Petronas Twin Towers",
+      "id": "cp_d1_001",
+      "location": "Suria KLCC (Food Court / 超市買零食)",
+      "googleMapLink": "https://maps.app.goo.gl/Vy3D7c7F8dQKZV2G8",
+      "cost": 50,
+      "startTime": "11:00",
+      "endTime": "14:00"
+    },
+    {
+      "id": "cp_d1_002",
+      "location": "KLCC Park 散步",
+      "googleMapLink": "https://maps.app.goo.gl/kVz6VxKvKuFRfGbV7",
+      "cost": 0,
+      "startTime": "16:00",
+      "endTime": "18:00"
+    },
+    {
+      "id": "cp_d1_003",
+      "location": "Petronas Twin Towers 夜景 + 噴泉",
       "googleMapLink": "https://maps.app.goo.gl/j5sm7DpJFK6S3aXN8",
       "cost": 0,
-      "startTime": "09:30",
-      "endTime": "21:45"
+      "startTime": "20:00",
+      "endTime": "21:30"
     }
   ]
 }

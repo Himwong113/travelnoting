@@ -1,5 +1,70 @@
 {
   "day": 3,
-  "date": "",
-  "checkpoints": []
+  "date": "2026-03-25",
+  "checkpoints": [
+    {
+      "id": "cp_d3_001",
+      "location": "Batu Caves",
+      "googleMapLink": "https://maps.app.goo.gl/MfP3G7u6C3PJnkHd7",
+      "cost": 0,
+      "startTime": "08:30",
+      "endTime": "10:30"
+    },
+    {
+      "id": "cp_d3_002",
+      "location": "Jadi Batek Gallery",
+      "googleMapLink": "https://maps.app.goo.gl/XnPxv4E7YZ6P5xKz5",
+      "cost": 0,
+      "startTime": "11:00",
+      "endTime": "12:00"
+    },
+    {
+      "id": "cp_d3_003",
+      "location": "國家清真寺 Masjid Negara",
+      "googleMapLink": "https://maps.app.goo.gl/RvG5bj3gC8MV8nqQ9",
+      "cost": 0,
+      "startTime": "12:30",
+      "endTime": "13:30"
+    },
+    {
+      "id": "cp_d3_004",
+      "location": "River of Life",
+      "googleMapLink": "https://maps.app.goo.gl/GVPNxKXqvKJq3ydQ6",
+      "cost": 0,
+      "startTime": "14:00",
+      "endTime": "14:30"
+    },
+    {
+      "id": "cp_d3_005",
+      "location": "獨立廣場 Dataran Merdeka",
+      "googleMapLink": "https://maps.app.goo.gl/GXPJ8VZ9xYdX4FYu5",
+      "cost": 0,
+      "startTime": "14:30",
+      "endTime": "15:00"
+    },
+    {
+      "id": "cp_d3_006",
+      "location": "蘇丹阿都沙末大廈 Sultan Abdul Samad Building",
+      "googleMapLink": "https://maps.app.goo.gl/7Z5D3MKE5sR1KzUj8",
+      "cost": 0,
+      "startTime": "15:00",
+      "endTime": "15:30"
+    },
+    {
+      "id": "cp_d3_007",
+      "location": "天后宮 Thean Hou Temple (經 Brickfields)",
+      "googleMapLink": "https://maps.app.goo.gl/k9SZ9KqWfpYdRFVE9",
+      "cost": 0,
+      "startTime": "16:00",
+      "endTime": "17:30"
+    },
+    {
+      "id": "cp_d3_008",
+      "location": "Bukit Bintang (Pavilion / Lot 10 Food Court)",
+      "googleMapLink": "https://maps.app.goo.gl/3x5GXqKvQwVZxqDr5",
+      "cost": 60,
+      "startTime": "19:00",
+      "endTime": "21:30"
+    }
+  ]
 }
