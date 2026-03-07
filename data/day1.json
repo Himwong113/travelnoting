@@ -4,27 +4,35 @@
   "checkpoints": [
     {
       "id": "cp_d1_001",
-      "location": "Suria KLCC (Food Court / 超市買零食)",
-      "googleMapLink": "https://maps.app.goo.gl/Vy3D7c7F8dQKZV2G8",
-      "cost": 50,
-      "startTime": "11:00",
+      "location": "抵達吉隆坡 + 安頓",
+      "googleMapLink": "",
+      "cost": 0,
+      "startTime": "12:00",
       "endTime": "14:00"
     },
     {
       "id": "cp_d1_002",
-      "location": "KLCC Park 散步",
-      "googleMapLink": "https://maps.app.goo.gl/kVz6VxKvKuFRfGbV7",
-      "cost": 0,
-      "startTime": "16:00",
-      "endTime": "18:00"
+      "location": "吉隆坡塔 KL Tower (Sky Deck + Sky Box 玻璃步道)",
+      "googleMapLink": "https://maps.app.goo.gl/RqP5uN6EqVJ3ZTDX8",
+      "cost": 99,
+      "startTime": "15:00",
+      "endTime": "17:30"
     },
     {
       "id": "cp_d1_003",
-      "location": "Petronas Twin Towers 夜景 + 噴泉",
+      "location": "國油雙峰塔 Petronas Twin Towers 外觀 + KLCC Park",
       "googleMapLink": "https://maps.app.goo.gl/j5sm7DpJFK6S3aXN8",
       "cost": 0,
-      "startTime": "20:00",
-      "endTime": "21:30"
+      "startTime": "18:00",
+      "endTime": "19:00"
+    },
+    {
+      "id": "cp_d1_004",
+      "location": "莎羅馬行人天橋 Saloma Link (LED燈光秀 19:00-22:00)",
+      "googleMapLink": "https://maps.app.goo.gl/4Gg8ypWdH7qjJkDv5",
+      "cost": 0,
+      "startTime": "19:30",
+      "endTime": "21:00"
     }
   ]
 }

@@ -4,42 +4,34 @@
   "checkpoints": [
     {
       "id": "cp_d2_001",
-      "location": "KL Bird Park",
-      "googleMapLink": "https://maps.app.goo.gl/7YQZ8V1LJ4WMKQWX6",
-      "cost": 67,
-      "startTime": "09:00",
-      "endTime": "12:00"
+      "location": "ICC Pudu 美食中心 (海南咖啡、豬腸粉、雲吞麵)",
+      "googleMapLink": "https://maps.app.goo.gl/LhG4D5h6BvXq9Jmr8",
+      "cost": 25,
+      "startTime": "07:30",
+      "endTime": "09:00"
     },
     {
       "id": "cp_d2_002",
-      "location": "Central Market (午餐 + 買手信文創)",
-      "googleMapLink": "https://maps.app.goo.gl/mHfQV6v7xPjZ9DLHA",
-      "cost": 80,
-      "startTime": "12:30",
-      "endTime": "15:00"
+      "location": "黑風洞 Batu Caves (272級彩虹階梯)",
+      "googleMapLink": "https://maps.app.goo.gl/MfP3G7u6C3PJnkHd7",
+      "cost": 0,
+      "startTime": "09:30",
+      "endTime": "12:00"
     },
     {
       "id": "cp_d2_003",
-      "location": "Petaling Street 茨廠街 (小食 + 市集)",
-      "googleMapLink": "https://maps.app.goo.gl/Nj9XVHQZ8u1Kz3GZ7",
-      "cost": 40,
-      "startTime": "15:30",
-      "endTime": "17:30"
+      "location": "Exchange 106 @ TRX / Pavilion KL 柏威年廣場",
+      "googleMapLink": "https://maps.app.goo.gl/FE98vb1xYZqFn3Nn9",
+      "cost": 100,
+      "startTime": "13:00",
+      "endTime": "17:00"
     },
     {
       "id": "cp_d2_004",
-      "location": "Suria KLCC 晚餐",
-      "googleMapLink": "https://maps.app.goo.gl/Vy3D7c7F8dQKZV2G8",
+      "location": "亞羅街夜市 Jalan Alor (沙爹、街頭美食)",
+      "googleMapLink": "https://maps.app.goo.gl/S2L7FZxUf5m7GQXP9",
       "cost": 50,
       "startTime": "19:00",
-      "endTime": "20:30"
-    },
-    {
-      "id": "cp_d2_005",
-      "location": "Petronas Twin Towers 再打卡",
-      "googleMapLink": "https://maps.app.goo.gl/j5sm7DpJFK6S3aXN8",
-      "cost": 0,
-      "startTime": "20:30",
       "endTime": "21:30"
     }
   ]

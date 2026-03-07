@@ -4,43 +4,35 @@
   "checkpoints": [
     {
       "id": "cp_d4_001",
-      "location": "Pavilion KL 購物",
-      "googleMapLink": "https://maps.app.goo.gl/3x5GXqKvQwVZxqDr5",
-      "cost": 200,
-      "startTime": "10:00",
-      "endTime": "13:00"
+      "location": "天后宮 Thean Hou Temple (壯觀華人廟宇)",
+      "googleMapLink": "https://maps.app.goo.gl/k9SZ9KqWfpYdRFVE9",
+      "cost": 0,
+      "startTime": "09:00",
+      "endTime": "10:30"
     },
     {
       "id": "cp_d4_002",
-      "location": "Pavilion KL Food Court 午餐",
-      "googleMapLink": "https://maps.app.goo.gl/3x5GXqKvQwVZxqDr5",
-      "cost": 40,
-      "startTime": "13:00",
-      "endTime": "14:00"
+      "location": "吉隆坡森林生態公園 KL Forest Eco-Park (Canopy Walk 樹冠漫步)",
+      "googleMapLink": "https://maps.app.goo.gl/H5kXHNyJzF3DLXWZ6",
+      "cost": 0,
+      "startTime": "11:00",
+      "endTime": "13:00"
     },
     {
       "id": "cp_d4_003",
-      "location": "TRX Exchange 購物 / 或返 KLCC 補買",
-      "googleMapLink": "https://maps.app.goo.gl/FE98vb1xYZqFn3Nn9",
-      "cost": 100,
-      "startTime": "14:30",
-      "endTime": "17:00"
+      "location": "午餐",
+      "googleMapLink": "",
+      "cost": 40,
+      "startTime": "13:30",
+      "endTime": "14:30"
     },
     {
       "id": "cp_d4_004",
-      "location": "KLCC Park + Twin Towers 最後打卡",
-      "googleMapLink": "https://maps.app.goo.gl/kVz6VxKvKuFRfGbV7",
-      "cost": 0,
-      "startTime": "17:30",
-      "endTime": "19:00"
-    },
-    {
-      "id": "cp_d4_005",
-      "location": "去機場 / 收尾",
-      "googleMapLink": "",
-      "cost": 80,
-      "startTime": "19:30",
-      "endTime": "21:00"
+      "location": "Vertigo (Banyan Tree 59F) / SkyBar (Traders Hotel 33F) 高空日落酒吧",
+      "googleMapLink": "https://maps.app.goo.gl/FfJQ3uU4bZ9oK2jF7",
+      "cost": 120,
+      "startTime": "17:00",
+      "endTime": "19:30"
     }
   ]
 }
